@@ -3,14 +3,16 @@
 import { useState } from "react";
 
 export default function CoordinateTracker() {
-  // State to store click coordinates
-  const [clickCoordinates, setClickCoordinates] = useState({ x: 0, y: 0 });
+  // State to store all clicked points
+  const [clickedPoints, setClickedPoints] = useState([]);
 
-  // Function triggered on click to update the coordinates
+  // Function triggered on click to update the points
   const handleClick = (event) => {
     const x = event.clientX; // X coordinate of the click
     const y = event.clientY; // Y coordinate of the click
-    setClickCoordinates({ x, y });
+
+    // Add the new click to the list of points
+    setClickedPoints((prevPoints) => [...prevPoints, { x, y }]);
   };
 
   return (
@@ -47,7 +49,22 @@ export default function CoordinateTracker() {
           transform: "translateY(-50%)",
         }}
       />
-      {/* Click coordinates display */}
+      {/* Render dots for each clicked point */}
+      {clickedPoints.map((point, index) => (
+        <div
+          key={index} // Each dot needs a unique key
+          style={{
+            position: "absolute",
+            top: point.y - 5, // Offset to center the dot
+            left: point.x - 5, // Offset to center the dot
+            width: "10px",
+            height: "10px",
+            backgroundColor: "red",
+            borderRadius: "50%",
+          }}
+        />
+      ))}
+      {/* Coordinates display */}
       <div
         style={{
           position: "absolute",
@@ -60,7 +77,11 @@ export default function CoordinateTracker() {
           fontSize: "16px",
         }}
       >
-        Coordinates: (X: {clickCoordinates.x}, Y: {clickCoordinates.y})
+        {clickedPoints.length > 0
+          ? `Last Coordinates: (X: ${
+            clickedPoints[clickedPoints.length - 1].x
+          }, Y: ${clickedPoints[clickedPoints.length - 1].y})`
+          : "Click on the screen to record points!"}
       </div>
     </div>
   );
